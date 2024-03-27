@@ -1,0 +1,31 @@
+services:
+  pg_db:
+    container_name: marketplace_postgres
+    image: postgres:16.2-alpine3.18
+    restart: always
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: "${PG_DBNAME}"
+    volumes:
+      - marketplace_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file: ./.env
+  
+  app:
+    container_name: marketplace_app
+    restart: always
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - "8081:8081"
+    volumes:
+      - ../logs:/logs
+    env_file:
+      - ./.env
+  
+volumes:
+  marketplace_postgres_data:
+
+

@@ -1,0 +1,5 @@
+.env
+.vscode
+logs
+bin
+c.out*
