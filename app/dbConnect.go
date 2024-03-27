@@ -7,15 +7,27 @@ import (
 	"os"
 )
 
-func GetPostgres() (*sql.DB, error) {
-	pgConnStr := fmt.Sprintf("user=%s dbname=%s password=%s host=%s port=%s sslmode=disable", os.Getenv("PG_USER"), os.Getenv("PG_DBNAME"), os.Getenv("PG_PASSWORD"), os.Getenv("PG_HOST"), os.Getenv("PG_PORT"))
-	conn, err := sql.Open("pgx", pgConnStr)
-	if err != nil {
-		return nil, err
+func GetPostgres() (conn *sql.DB, err error) {
+	for _, host := range []string{os.Getenv("PG_HOST"), "localhost"} {
+		pgConnStr := fmt.Sprintf(
+			"user=%s dbname=%s password=%s host=%s port=%s sslmode=disable",
+			os.Getenv("PG_USER"),
+			os.Getenv("PG_DBNAME"),
+			os.Getenv("PG_PASSWORD"),
+			host,
+			os.Getenv("PG_PORT"),
+		)
+		conn, err := sql.Open("pgx", pgConnStr)
+		if err != nil {
+			continue
+		}
+		err = conn.Ping()
+		if err != nil {
+			continue
+		}
+
+		break
 	}
-	err = conn.Ping()
-	if err != nil {
-		return nil, err
-	}
-	return conn, nil
+
+	return conn, err
 }
