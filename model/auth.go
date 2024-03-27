@@ -1,10 +1,17 @@
 package model
 
-import "marketplace/pkg/hash"
+import (
+	"marketplace/pkg/hash"
+	"strings"
+)
 
 type RegisterInput struct {
-	Username       string `json:"username"`
-	Password       string `json:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (i *RegisterInput) Trim() {
+	i.Username = strings.TrimSpace(i.Username)
 }
 
 func (i *RegisterInput) ToUser(salt string) *User {
@@ -15,4 +22,13 @@ func (i *RegisterInput) ToUser(salt string) *User {
 	}
 
 	return &user
+}
+
+type LoginInput struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (i *LoginInput) Trim() {
+	i.Username = strings.TrimSpace(i.Username)
 }

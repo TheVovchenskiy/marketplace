@@ -30,7 +30,6 @@ func (handler *AuthHandler) HandleRegistration(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-
 	user, err := handler.authUsecase.RegisterUser(*registrationInput)
 	if err != nil {
 		responseTemplate.ServeJsonError(w, err)
@@ -38,4 +37,25 @@ func (handler *AuthHandler) HandleRegistration(w http.ResponseWriter, r *http.Re
 	}
 
 	responseTemplate.MarshalAndSend(w, user)
+}
+
+func (handler *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	decoder := json.NewDecoder(r.Body)
+	loginInput := new(model.LoginInput)
+	err := decoder.Decode(loginInput)
+	if err != nil {
+		responseTemplate.ServeJsonError(w, serverErrors.ErrInvalidBody)
+		return
+	}
+
+	user, err := handler.authUsecase.LoginUser(*loginInput)
+	if err != nil {
+		responseTemplate.ServeJsonError(w, err)
+		return
+	}
+
+	responseTemplate.MarshalAndSend(w, user)
+
 }

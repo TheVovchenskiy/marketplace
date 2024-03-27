@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"marketplace/model"
 
 	"github.com/jackc/pgx"
@@ -47,4 +48,37 @@ func (repo *UserPg) StoreUser(ctx context.Context, user *model.User) (int, error
 	}
 
 	return id, nil
+}
+
+func (repo *UserPg) GetUserByUsername(ctx context.Context, username string) (model.User, error) {
+	query := `SELECT
+					up.id,
+					up.username,
+					up.password_hash,
+					up.salt
+				FROM
+					public.user_profile up
+				WHERE
+					up.username = $1
+				`
+	var user model.User
+	err := repo.db.QueryRow(
+		query,
+		username,
+	).
+		Scan(
+			&user.Id,
+			&user.Username,
+			&user.PasswordHash,
+			&user.Salt,
+		)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = fmt.Errorf("%w: %s", ErrNoUserFound, username)
+		}
+		return model.User{}, err
+	}
+
+	return user, nil
 }

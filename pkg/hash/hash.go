@@ -17,6 +17,6 @@ func HashPassword(password string, salt string) (hashedPassword string) {
 	return
 }
 
-func MatchPasswords(hashedPassword, currPassword string, salt string) (ok bool) {
-	return hashedPassword == HashPassword(currPassword, salt)
+func MatchPasswords(hashedPassword, inputPassword string, salt string) (ok bool) {
+	return hashedPassword == HashPassword(inputPassword, salt)
 }

@@ -7,7 +7,5 @@ import (
 
 type UserStorage interface {
 	StoreUser(ctx context.Context, user *model.User) (int, error)
-}
-
-type SessionStorage interface {
+	GetUserByUsername(ctx context.Context, username string) (model.User, error)
 }
