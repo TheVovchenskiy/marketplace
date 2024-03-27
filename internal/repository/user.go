@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"marketplace/model"
+
+	"github.com/jackc/pgx"
 )
 
 type UserPg struct {
@@ -35,6 +37,12 @@ func (repo *UserPg) StoreUser(ctx context.Context, user *model.User) (int, error
 		Scan(&id)
 
 	if err != nil {
+		if pgErr, ok := err.(pgx.PgError); ok {
+			switch pgErr.Code {
+			case "23505":
+				return 0, ErrAccountAlreadyExists
+			}
+		}
 		return 0, err
 	}
 

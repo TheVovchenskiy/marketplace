@@ -6,8 +6,12 @@ run:
 build:
 	go build -o ./bin/app ./cmd/marketplace/main.go
 
+.PHONY: build-app-image
+build-app-image:
+	docker build -t marketplace:$(version) .
+
 .PHONY: compose-up
-compose-up:
+compose-up: build-app-image
 	docker compose up -d
 
 .PHONY: create-migration

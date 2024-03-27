@@ -1,6 +1,7 @@
 package serverErrors
 
 import (
+	"marketplace/internal/repository"
 	"marketplace/pkg/token"
 	"marketplace/pkg/validator"
 	"net/http"
@@ -14,6 +15,7 @@ var HTTPErrors = map[error]int{
 	validator.ErrInvalidUsername:         http.StatusBadRequest,
 	token.ErrAuthorizationHeaderRequired: http.StatusUnauthorized,
 	token.ErrInvalidToken:                http.StatusUnauthorized,
+	repository.ErrAccountAlreadyExists:   http.StatusConflict,
 }
 
 func MapHTTPError(err error) (msg string, status int) {
