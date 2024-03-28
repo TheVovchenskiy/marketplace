@@ -57,7 +57,7 @@ func (u *AdUsecase) GetAds(
 ) ([]model.AdAPI, error) {
 	userIdStr, ok := ctx.Value(token.UserContextKey).(string)
 	if !ok {
-		return nil, token.ErrInvalidToken
+		userIdStr = ""
 	}
 
 	ads, err := u.adStorage.GetAds(

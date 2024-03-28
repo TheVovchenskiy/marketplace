@@ -53,7 +53,11 @@ func (handler *AdHandler) HandleGetAd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sortField := r.URL.Query().Get("sort_by")
-	if sortField != "created_at" && sortField != "cents_price" {
+	if sortField != "date" && sortField != "price" {
+		sortField = "created_at"
+	} else if sortField == "price" {
+		sortField = "cents_price"
+	} else if sortField == "date" {
 		sortField = "created_at"
 	}
 
