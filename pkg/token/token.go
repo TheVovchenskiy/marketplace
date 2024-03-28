@@ -8,9 +8,9 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-type ContextKey string
+// type ContextKey string
 
-const UserContextKey = ContextKey("userId")
+// const UserContextKey = ContextKey("userId")
 
 var (
 	AccesTokenExpiresAt   = time.Now().Add(24 * time.Hour).Unix()

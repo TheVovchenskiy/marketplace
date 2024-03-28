@@ -69,7 +69,7 @@ func GenerateAdQuery(
 		"\n",
 	)
 
-	fmt.Println(res)
+	// fmt.Println(res)
 
 	return res, args, nil
 }

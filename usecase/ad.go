@@ -2,9 +2,11 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"marketplace/model"
 	"marketplace/pkg/token"
+	"marketplace/pkg/utils"
 	"marketplace/pkg/validator"
 	"strconv"
 )
@@ -22,11 +24,14 @@ func NewAdUsecase(adStorage AdStorage) *AdUsecase {
 func (u *AdUsecase) AddAd(ctx context.Context, ad model.AdAPI) (model.AdAPI, error) {
 	ad.Trim()
 
-	authorId, ok := ctx.Value(token.UserContextKey).(string)
-	if !ok {
-		return model.AdAPI{}, token.ErrInvalidToken
+	authorId, err := utils.GetContextUserId(ctx)
+	if err != nil {
+		if errors.Is(err, utils.ErrNoUserIdInContext) {
+			return model.AdAPI{}, token.ErrInvalidToken
+		}
+		return model.AdAPI{}, err
 	}
-	ad.AuthorId, _ = strconv.Atoi(authorId)
+	ad.AuthorId = authorId
 
 	if err := validator.ValidateAdAPI(ad); err != nil {
 		return model.AdAPI{}, err
@@ -55,9 +60,16 @@ func (u *AdUsecase) GetAds(
 	minPrice string,
 	maxPrice string,
 ) ([]model.AdAPI, error) {
-	userIdStr, ok := ctx.Value(token.UserContextKey).(string)
-	if !ok {
-		userIdStr = ""
+	var userIdStr string
+	userId, err := utils.GetContextUserId(ctx)
+	if err != nil {
+		if errors.Is(err, utils.ErrNoUserIdInContext) {
+			userIdStr = ""
+		} else {
+			return nil, err
+		}
+	} else {
+		userIdStr = fmt.Sprint(userId)
 	}
 
 	ads, err := u.adStorage.GetAds(

@@ -2,6 +2,8 @@ package utils
 
 import (
 	"context"
+	"marketplace/pkg/token"
+	"strconv"
 
 	"github.com/sirupsen/logrus"
 )
@@ -11,7 +13,20 @@ type ContextKey string
 const (
 	REQUEST_ID_KEY = ContextKey("request_id")
 	LOGGER_KEY     = ContextKey("logger")
+	USER_ID_KEY    = ContextKey("user_id")
 )
+
+func GetContextUserId(ctx context.Context) (int, error) {
+	userIdCtx, ok := ctx.Value(USER_ID_KEY).(string)
+	if !ok {
+		return 0, ErrNoUserIdInContext
+	}
+	userId, err := strconv.Atoi(userIdCtx)
+	if err != nil {
+		return 0, token.ErrInvalidToken
+	}
+	return userId, nil
+}
 
 func GetContextLogger(ctx context.Context) *logrus.Entry {
 	logger, ok := ctx.Value(LOGGER_KEY).(*logrus.Entry)

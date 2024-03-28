@@ -6,6 +6,7 @@ import (
 	"marketplace/configs"
 	"marketplace/pkg/responseTemplate"
 	"marketplace/pkg/token"
+	"marketplace/pkg/utils"
 	"net/http"
 	"strings"
 
@@ -50,7 +51,7 @@ func TokenVerify(strict bool, next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), token.UserContextKey, claims.UserId)
+		ctx := context.WithValue(r.Context(), utils.USER_ID_KEY, claims.UserId)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
