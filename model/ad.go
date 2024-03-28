@@ -39,6 +39,7 @@ type AdAPI struct {
 	Price       string `json:"price"`
 	PictureUrl  string `json:"pictureUrl"`
 	CreatedAt   string `json:"createdAt"`
+	MyAd        bool   `json:"myAd,omitempty"`
 }
 
 func (ad *AdAPI) Trim() {

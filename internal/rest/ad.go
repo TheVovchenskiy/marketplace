@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"marketplace/model"
@@ -68,7 +67,7 @@ func (handler *AdHandler) HandleGetAd(w http.ResponseWriter, r *http.Request) {
 	maxPrice := r.URL.Query().Get("max_price")
 
 	ads, err := handler.adUsecase.GetAds(
-		context.TODO(),
+		r.Context(),
 		pageNum,
 		resultsPerPage,
 		sortField,

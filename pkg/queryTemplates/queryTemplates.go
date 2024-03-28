@@ -16,15 +16,15 @@ func GenerateAdQuery(
 ) (string, []interface{}, error) {
 	args := []interface{}{}
 	baseQuery := `SELECT
-					a.id,
-					a.author_id,
-					a."name",
-					a.description,
-					a.cents_price,
-					a.picture_url,
-					a.created_at
+					id,
+					author_id,
+					"name",
+					description,
+					cents_price,
+					picture_url,
+					created_at
 				FROM
-					public.ad a`
+					public.ad`
 
 	var whereClause string
 	if minPrice == "" {
@@ -35,7 +35,7 @@ func GenerateAdQuery(
 		if err != nil {
 			return "", nil, err
 		}
-		whereClause = fmt.Sprintf("WHERE a.cents_price >= $%d", len(args)+1)
+		whereClause = fmt.Sprintf("WHERE cents_price >= $%d", len(args)+1)
 		args = append(args, minPriceValue)
 	} else {
 		minPriceValue, err := price.ToCents(minPrice)
@@ -46,12 +46,11 @@ func GenerateAdQuery(
 		if err != nil {
 			return "", nil, err
 		}
-		whereClause = fmt.Sprintf("WHERE a.cents_price >= $%d AND a.cents_price <= $%d", len(args)+1, len(args)+2)
+		whereClause = fmt.Sprintf("WHERE cents_price >= $%d AND cents_price <= $%d", len(args)+1, len(args)+2)
 		args = append(args, minPriceValue, maxPriceValue)
 	}
 
-	orderClause := fmt.Sprintf("ORDER BY $%d %s", len(args)+1, strings.ToUpper(sortOrder))
-	args = append(args, sortField)
+	orderClause := fmt.Sprintf("ORDER BY %s %s", sortField, strings.ToUpper(sortOrder))
 
 	limitClause := fmt.Sprintf("LIMIT $%d", len(args)+1)
 	args = append(args, resultsPerPage)
@@ -59,16 +58,18 @@ func GenerateAdQuery(
 	offsetCause := fmt.Sprintf("OFFSET $%d", len(args)+1)
 	args = append(args, (pageNum-1)*resultsPerPage)
 
-	return strings.Join(
-			[]string{
-				baseQuery,
-				whereClause,
-				orderClause,
-				limitClause,
-				offsetCause,
-			},
-			"\n",
-		),
-		args,
-		nil
+	res := strings.Join(
+		[]string{
+			baseQuery,
+			whereClause,
+			orderClause,
+			limitClause,
+			offsetCause,
+		},
+		"\n",
+	)
+
+	fmt.Println(res)
+
+	return res, args, nil
 }

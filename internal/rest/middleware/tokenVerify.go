@@ -31,7 +31,6 @@ func TokenVerify(strict bool, next http.Handler) http.Handler {
 		}
 
 		tokenString := bearerToken[1]
-		// claims := &jwt.StandardClaims{}
 		claims := &token.Claims{}
 
 		accessToken, err := jwt.ParseWithClaims(tokenString, claims, func(jwtToken *jwt.Token) (interface{}, error) {

@@ -23,7 +23,6 @@ func (u *AdUsecase) AddAd(ctx context.Context, ad model.AdAPI) (model.AdAPI, err
 	ad.Trim()
 
 	authorId, ok := ctx.Value(token.UserContextKey).(string)
-	fmt.Println(authorId)
 	if !ok {
 		return model.AdAPI{}, token.ErrInvalidToken
 	}
@@ -56,6 +55,11 @@ func (u *AdUsecase) GetAds(
 	minPrice string,
 	maxPrice string,
 ) ([]model.AdAPI, error) {
+	userIdStr, ok := ctx.Value(token.UserContextKey).(string)
+	if !ok {
+		return nil, token.ErrInvalidToken
+	}
+
 	ads, err := u.adStorage.GetAds(
 		ctx,
 		pageNum,
@@ -75,6 +79,14 @@ func (u *AdUsecase) GetAds(
 		if err != nil {
 			return nil, err
 		}
+
+		if len(userIdStr) > 0 {
+			userId, _ := strconv.Atoi(userIdStr)
+			adApi.MyAd = userId == ad.AuthorId
+		} else {
+			adApi.MyAd = false
+		}
+
 		adsToReturn = append(adsToReturn, *adApi)
 	}
 	return adsToReturn, nil
