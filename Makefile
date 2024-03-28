@@ -42,5 +42,9 @@ test:
 cover: test
 	go tool cover -func=c.out.tmp
 
+.PHONY: create-logs
+create-logs:
+	mkdir logs || echo './logs/ already exists'
+
 .PHONY: beautiful
-beautiful: install-dotenv install-tern migrate compose-up
+beautiful: create-logs install-dotenv install-tern migrate compose-up
