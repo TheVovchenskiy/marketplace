@@ -8,7 +8,7 @@ import (
 )
 
 func GetPostgres() (conn *sql.DB, err error) {
-	for _, host := range []string{os.Getenv("PG_HOST"), "localhost"} {
+	for _, host := range []string{"pg_db", "localhost"} {
 		pgConnStr := fmt.Sprintf(
 			"user=%s dbname=%s password=%s host=%s port=%s sslmode=disable",
 			os.Getenv("PG_USER"),

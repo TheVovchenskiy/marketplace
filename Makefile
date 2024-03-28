@@ -20,7 +20,7 @@ create-migration:
 
 .PHONY: install-dotenv
 install-dotenv:
-	npm install -g dotenv-cli
+	sudo npm install -g dotenv-cli
 
 .PHONY: install-tern
 install-tern:
@@ -41,3 +41,6 @@ test:
 .PHONY: cover
 cover: test
 	go tool cover -func=c.out.tmp
+
+.PHONY: beautiful
+beautiful: install-dotenv install-tern migrate compose-up

@@ -2,6 +2,25 @@
 
 This is a simple `REST APT` server.
 
+## Getting started
+
+To run this server, you need to create `.env` file in the root directory with following data:
+
+```bash
+PG_USER=postgres_user
+PG_DBNAME=postgres_db_name
+PG_PASSWORD=postgres_user_password
+PG_PORT=5432
+SECRET_KEY=secret_key_to_generate_jwt
+```
+
+Also you need to install few cli utils. To make it easier I implemented single `make` command. Simply run:
+
+```bash
+make beautiful version=0.0.1
+```
+where `version` is a image version of an app.
+
 ## End points
 
 ### Authorization
