@@ -32,6 +32,14 @@ func TestValidateRegisterInput(t *testing.T) {
 			validator.ErrInvalidUsername,
 		},
 		{
+			"username with spaces",
+			model.RegisterInput{
+				Username: "one two",
+				Password: "qwerty123",
+			},
+			validator.ErrInvalidUsername,
+		},
+		{
 			"small password",
 			model.RegisterInput{
 				Username: "username",

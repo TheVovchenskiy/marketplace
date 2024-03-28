@@ -14,19 +14,29 @@ PG_PORT=5432
 SECRET_KEY=secret_key_to_generate_jwt
 ```
 
-Also you need to install few cli utils. To make it easier I implemented single `make` command. Simply run:
+Also you need docker to run containers and to install few cli utils. To make it easier I implemented single `make` command. Simply run:
 
 ```bash
 make beautiful version=0.0.1
 ```
-where `version` is a image version of an app.
+where `version` is an image version of an app.
 
 ## End points
 
 ### Authorization
 
 - `POST /register` - register with your `username` and `password`
+  - `0 < len("username") <= 150` and must not have spaces
+  - `6 <= len("password")`
 - `POST /login` - login with your `username` and `password`
+
+```json
+// request body example
+{
+    "username": "username",
+    "password": "password"
+}
+```
 
 ### Ads
 
@@ -34,6 +44,7 @@ where `version` is a image version of an app.
   - must supply with header like `Authorization: Bearer <your_access_token_here>`
 
 ```json
+// request body example
 {
     "name": "ad name",
     "description": "ad description",
@@ -41,6 +52,9 @@ where `version` is a image version of an app.
     "pictureUrl": "picture url"
 }
 ```
+  - `0 < len("name") <= 200` 
+  - `len("description") <= 1000` 
+  - `"price"` must have following format `<at least one digit>.<two digit>`
 
 - `GET /ads` - get a ads list. Allowed query params:
   - `page_num` - current page, dafaults to `1`

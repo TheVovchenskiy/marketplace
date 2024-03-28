@@ -1,6 +1,9 @@
 package validator
 
-import "marketplace/pkg/price"
+import (
+	"marketplace/pkg/price"
+	"strings"
+)
 
 const (
 	USERNAME_MAX_LEN = 150
@@ -11,7 +14,7 @@ const (
 )
 
 func ValidateUsername(username string) error {
-	if len(username) == 0 || len(username) > USERNAME_MAX_LEN {
+	if len(username) == 0 || len(username) > USERNAME_MAX_LEN || strings.Count(username, " ") > 0 {
 		return ErrInvalidUsername
 	}
 	return nil
