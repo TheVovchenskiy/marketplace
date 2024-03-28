@@ -25,7 +25,7 @@ func ValidatePassword(password string) error {
 }
 
 func ValidateAdName(name string) error {
-	if len(name) > AD_NAME_MAX_LEN {
+	if name == "" || len(name) > AD_NAME_MAX_LEN {
 		return ErrInvalidAdName
 	}
 	return nil
