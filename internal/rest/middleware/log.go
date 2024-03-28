@@ -62,6 +62,8 @@ func AccessLogMiddleware( /* logger *logrus.Logger,  */ next http.Handler) http.
 			"request_id": requestID,
 		})
 
+		contextLogger.Info("got request")
+
 		ctx := context.WithValue(r.Context(), utils.LOGGER_KEY, contextLogger)
 
 		next.ServeHTTP(wrappedWriter, r.WithContext(ctx))
