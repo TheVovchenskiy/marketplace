@@ -16,15 +16,15 @@ func GenerateAdQuery(
 ) (string, []interface{}, error) {
 	args := []interface{}{}
 	baseQuery := `SELECT
-					id,
-					author_id,
-					"name",
-					description,
-					cents_price,
-					picture_url,
-					created_at
-				FROM
-					public.ad`
+		id,
+		author_id,
+		"name",
+		description,
+		cents_price,
+		picture_url,
+		created_at
+	FROM
+		public.ad`
 
 	var whereClause string
 	if minPrice == "" {
@@ -66,7 +66,7 @@ func GenerateAdQuery(
 			limitClause,
 			offsetCause,
 		},
-		"\n",
+		"\n\t",
 	)
 
 	// fmt.Println(res)
