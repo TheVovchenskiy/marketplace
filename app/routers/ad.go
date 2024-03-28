@@ -12,5 +12,6 @@ import (
 func MountAdRouter(router *mux.Router, adStorage usecase.AdStorage) {
 	handler := rest.NewAdHandler(adStorage)
 
-	router.Handle("/ad", middleware.TokenVerify(http.HandlerFunc(handler.HandleAddAd))).Methods("POST")
+	router.Handle("/ads", middleware.TokenVerify(true, http.HandlerFunc(handler.HandleAddAd))).Methods("POST")
+	router.Handle("/ads", middleware.TokenVerify(false, http.HandlerFunc(handler.HandleGetAd))).Methods("GET")
 }

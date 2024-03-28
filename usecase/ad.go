@@ -2,8 +2,11 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"marketplace/model"
+	"marketplace/pkg/token"
 	"marketplace/pkg/validator"
+	"strconv"
 )
 
 type AdUsecase struct {
@@ -16,8 +19,15 @@ func NewAdUsecase(adStorage AdStorage) *AdUsecase {
 	}
 }
 
-func (u *AdUsecase) AddAd(ad model.AdAPI) (model.AdAPI, error) {
+func (u *AdUsecase) AddAd(ctx context.Context, ad model.AdAPI) (model.AdAPI, error) {
 	ad.Trim()
+
+	authorId, ok := ctx.Value(token.UserContextKey).(string)
+	fmt.Println(authorId)
+	if !ok {
+		return model.AdAPI{}, token.ErrInvalidToken
+	}
+	ad.AuthorId, _ = strconv.Atoi(authorId)
 
 	if err := validator.ValidateAdAPI(ad); err != nil {
 		return model.AdAPI{}, err
@@ -30,8 +40,42 @@ func (u *AdUsecase) AddAd(ad model.AdAPI) (model.AdAPI, error) {
 
 	ad.Id, err = u.adStorage.AddAd(context.TODO(), *adDB)
 	if err != nil {
+		fmt.Println(err)
 		return model.AdAPI{}, err
 	}
 
 	return ad, nil
+}
+
+func (u *AdUsecase) GetAds(
+	ctx context.Context,
+	pageNum int,
+	resultsPerPage int,
+	sortField string,
+	sortOrder string,
+	minPrice string,
+	maxPrice string,
+) ([]model.AdAPI, error) {
+	ads, err := u.adStorage.GetAds(
+		ctx,
+		pageNum,
+		resultsPerPage,
+		sortField,
+		sortOrder,
+		minPrice,
+		maxPrice,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	adsToReturn := []model.AdAPI{}
+	for _, ad := range ads {
+		adApi, err := ad.ToAPI()
+		if err != nil {
+			return nil, err
+		}
+		adsToReturn = append(adsToReturn, *adApi)
+	}
+	return adsToReturn, nil
 }

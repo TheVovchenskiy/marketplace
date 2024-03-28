@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 	"marketplace/configs"
 	"marketplace/pkg/responseTemplate"
@@ -11,10 +12,14 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func TokenVerify(next http.Handler) http.Handler {
+func TokenVerify(strict bool, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authorizationHeader := r.Header.Get("Authorization")
 		if authorizationHeader == "" {
+			if !strict {
+				next.ServeHTTP(w, r)
+				return
+			}
 			responseTemplate.ServeJsonError(w, token.ErrAuthorizationHeaderRequired)
 			return
 		}
@@ -26,7 +31,8 @@ func TokenVerify(next http.Handler) http.Handler {
 		}
 
 		tokenString := bearerToken[1]
-		claims := &jwt.StandardClaims{}
+		// claims := &jwt.StandardClaims{}
+		claims := &token.Claims{}
 
 		accessToken, err := jwt.ParseWithClaims(tokenString, claims, func(jwtToken *jwt.Token) (interface{}, error) {
 			if _, ok := jwtToken.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -45,7 +51,7 @@ func TokenVerify(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r)
-
+		ctx := context.WithValue(r.Context(), token.UserContextKey, claims.UserId)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

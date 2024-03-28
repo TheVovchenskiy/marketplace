@@ -12,4 +12,13 @@ type UserStorage interface {
 
 type AdStorage interface {
 	AddAd(ctx context.Context, ad model.AdDB) (int, error)
+	GetAds(
+		ctx context.Context,
+		pageNum int,
+		resultsPerPage int,
+		sortField string,
+		sortOrder string,
+		minPrice string,
+		maxPrice string,
+	) ([]model.AdDB, error)
 }
