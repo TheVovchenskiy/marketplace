@@ -21,7 +21,7 @@ make beautiful version=0.0.1
 ```
 where `version` is an image version of an app.
 
-## End points
+## Endpoints
 
 ### Authorization
 
@@ -41,8 +41,10 @@ where `version` is an image version of an app.
 ### Ads
 
 - `POST /ads` - post a new ad. In body must contain json with fields
-  - must supply with header like `Authorization: Bearer <your_access_token_here>`
-
+  - request must have header like `Authorization: Bearer <your_access_token_here>`
+  - `0 < len("name") <= 200` 
+  - `len("description") <= 1000` 
+  - `"price"` must have following format `<at_least_one_digit>.<strictly_two_digit>`
 ```json
 // request body example
 {
@@ -52,9 +54,6 @@ where `version` is an image version of an app.
     "pictureUrl": "picture url"
 }
 ```
-  - `0 < len("name") <= 200` 
-  - `len("description") <= 1000` 
-  - `"price"` must have following format `<at least one digit>.<two digit>`
 
 - `GET /ads` - get a ads list. Allowed query params:
   - `page_num` - current page, dafaults to `1`
