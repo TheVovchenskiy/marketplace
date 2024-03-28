@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	AccesTokenExpiresAt   = time.Now().Add(15 * time.Minute).Unix()
+	AccesTokenExpiresAt   = time.Now().Add(24 * time.Hour).Unix()
 	RefreshTokenExpiresAt = time.Now().Add(7 * 24 * time.Hour).Unix()
 )
 

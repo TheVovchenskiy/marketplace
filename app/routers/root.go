@@ -20,9 +20,11 @@ func Run() (err error) {
 	defer db.Close()
 
 	userStorage := repository.NewUserPg(db)
+	adStorage := repository.NewAdPg(db)
 
 	rootRouter := mux.NewRouter()
 	MountAuthRouter(rootRouter, userStorage)
+	MountAdRouter(rootRouter, adStorage)
 
 	rootRouter.Use(middleware.PanicRecoverMiddleware)
 

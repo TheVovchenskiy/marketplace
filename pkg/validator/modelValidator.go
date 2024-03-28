@@ -11,3 +11,16 @@ func ValidateRegisterInput(registerInput model.RegisterInput) (err error) {
 	}
 	return
 }
+
+func ValidateAdAPI(ad model.AdAPI) (err error) {
+	if err = ValidateAdName(ad.Name); err != nil {
+		return
+	}
+	if err = ValidateAdDescription(ad.Description); err != nil {
+		return
+	}
+	if err = ValidateAdPrice(ad.Price); err != nil {
+		return
+	}
+	return
+}

@@ -17,7 +17,7 @@ func GetPostgres() (conn *sql.DB, err error) {
 			host,
 			os.Getenv("PG_PORT"),
 		)
-		conn, err := sql.Open("pgx", pgConnStr)
+		conn, err = sql.Open("pgx", pgConnStr)
 		if err != nil {
 			continue
 		}
